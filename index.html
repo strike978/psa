@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phenotype SNP Analyzer</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%A7%AC%3C/text%3E%3C/svg%3E">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            background: #f8faff;
+            border: 1.5px solid #2d6cdf;
+            border-radius: 6px;
+            font-size: 1em;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1em;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 4px 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            margin: 8px 0;
+            cursor: pointer;
+            background: #2d6cdf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .summary {
+            margin: 1em 0;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: #2d6cdf;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: #444;
+        }
+
+        #snpCount {
+            margin: 1.5em 0 0.5em 0;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2d6cdf;
+        }
+
+        h2 {
+            margin-top: 1.5em;
+            color: #444;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input[type="file"] {
+            margin-top: 0.5em;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #bbb;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                margin: 0.5em;
+                font-size: 1em;
+            }
+
+            h1 {
+                font-size: 1.3em;
+            }
+
+            textarea {
+                height: 180px;
+                font-size: 0.95em;
+                padding: 8px;
+            }
+
+            .btn {
+                width: 100%;
+                font-size: 1em;
+                padding: 10px 0;
+            }
+
+            label,
+            h2 {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧬 Phenotype SNP Analyzer</h1>
+    <p style="margin:0 0 1em 0;font-size:1.05em;color:#444;max-width:600px;">
+        This tool helps you explore the SNPs in your genetic raw data that are associated with visible phenotypical
+        traits. Upload your data to see which key SNPs are present and view their raw values.
+    </p>
+    <div style="margin-bottom:1em;">
+        <p
+            style="font-size:1.1em;color:#2d6cdf;font-weight:bold;margin:0;display:flex;align-items:center;gap:0.5em;flex-wrap:wrap;">
+            Accepted file formats:
+            <span style="display:inline-flex;align-items:center;gap:0.2em;">
+                <svg width="24" height="24" viewBox="0 0 48 36" style="vertical-align:middle;">
+                    <g>
+                        <path d="M19.4,22.2c-0.9,1.8-0.1,4,1.7,4.9c1.8,0.9,4,0.1,4.9-1.7l1.5-3l-3.1-10.3L19.4,22.2z"
+                            fill="#E03A3E" />
+                        <path
+                            d="M39.9-11.3c-1.8-0.9-4-0.1-4.9,1.7L29.1,2.5l3.1,10.3l9.4-19.1C42.5-8.2,41.8-10.4,39.9-11.3z"
+                            fill="#B0D136" />
+                        <path d="M30.3,31.7c0.6,1.9,2.7,3,4.6,2.4c1.9-0.6,3-2.7,2.5-4.6l-5.1-16.8l-4.8,9.7L30.3,31.7z"
+                            fill="#B0D136" />
+                        <path d="M27-4.3c-0.6-1.9-2.7-3-4.6-2.5c-1.9,0.6-3,2.7-2.5,4.6l4.4,14.3l4.8-9.7L27-4.3z"
+                            fill="#E03A3E" />
+                        <polygon points="24.3,12.1 27.5,22.5 32.2,12.8 29.1,2.5" fill="#6dc067" />
+                    </g>
+                </svg>
+                <span style='color:#1a7f37;'>23andMe</span>
+            </span>
+            or
+            <span style="display:inline-flex;align-items:center;gap:0.2em;">
+                <svg width="24" height="24" viewBox="0 0 120 90" style="vertical-align:middle;">
+                    <path class="st0" d="M106.9,0v42.4h-4.2c-1.8-6.3-8.4-24.9-23.7-34.9C67.4,0,51.5,0,43.3,0c-2.2,0-1.1,19.5,8.3,30.5
+                        c10.9,12.8,20.2,13.2,20.2,13.2l-9.2-0.4c0,0-14.3-12.3-28.6-11.3C19.7,33.1,0,40.3,0,46.9s20.1,17,36.2,16.1
+                        s24-10.8,26-11.3c1.9-0.6,10,0,10,0s-16.2,7.2-22.3,18.9s-8.7,22.4-8,23.2c0.6,0.8,29.2,4.7,43.7-8.5
+                        s17.8-33.6,17.8-33.6h3.6v42.2h10.7V0H106.9z
+                         M36.3,54.6c-10,0-15.8-7.4-16.2-8.7c-0.4-1.3,0.6-7.8,14.1-7.8s18.4,10.6,18.4,10.6
+                        C51.5,51.8,46.3,54.6,36.3,54.6z M67.1,32.7
+                         c-7.8-9.7-7.8-22.5-7.8-22.5c5.2-1.9,13.6,1.9,20.4,8.4c6.7,6.5,11.3,19.9,10.2,22.5
+                        C88.8,43.7,74.9,42.4,67.1,32.7z M85.3,70.6
+                         c-7.6,18.9-24.9,13.6-27.1,13c-2.2-0.6-0.6-6.3,9.3-19.9S90,52.8,90,52.8
+                        C90.4,60,90,58.9,85.3,70.6z" fill="#6b8e23" />
+                </svg>
+                <span style='color:#1a7f37;'>AncestryDNA</span>
+            </span>
+            raw data files
+        </p>
+        <p style="font-size:1em;color:#444;margin:0.3em 0 0 0;">Your raw genetic data is processed <b>locally</b> and
+            <b>never leaves your device</b>.
+        </p>
+    </div>
+    <div style="margin:2em 0 1em 0;">
+        <label for="geneticFile">Upload genetic raw data (.txt):</label><br>
+        <input type="file" id="geneticFile" accept=".txt">
+    </div>
+    <div id="snpCount"></div>
+    <h2>Raw Data Preview</h2>
+    <textarea id="rawData" readonly></textarea>
+    <br>
+    <button class="btn" onclick="copyRawData()">📋 Copy Raw Data</button>
+    <span id="copyNotice" style="display:none;margin-left:1em;color:#1a7f37;font-weight:bold;">Copied!</span>
+    <script>
+        // Preloaded SNP list from snps.txt
+        const snpList = [
+            // gene, snp
+            ["ASIP", "rs1015362"], ["ASIP", "rs4911414"], ["ASIP", "rs6142129"],
+            ["FANCA", "rs12931267"], ["FBXL17", "rs288139"], ["FBXL17", "rs34424"],
+            ["HERC2", "rs1129038"], ["HERC2", "rs11636232"], ["HERC2", "rs12913832"],
+            ["HERC2", "rs1470608"], ["HERC2", "rs1597196"], ["HERC2", "rs1667394"],
+            ["HERC2", "rs2871875"], ["HERC2", "rs7170852"], ["HERC2", "rs916977"],
+            ["IRF4", "rs12203592"], ["IRF4", "rs2671422"], ["IRF4", "rs3778607"],
+            ["IRF4", "rs4959270"], ["IRF4", "rs6906608"], ["IRF4", "rs7748534"],
+            ["IRF4", "rs7773324"], ["KITLG", "rs114873"], ["KITLG", "rs12821256"],
+            ["KITLG", "rs642742"], ["MC1R", "rs11547464"], ["MC1R", "rs1805005"],
+            ["MC1R", "rs1805006"], ["MC1R", "rs1805007"], ["MC1R", "rs1805008"],
+            ["MC1R", "rs1805009"], ["Near SLC45A2", "rs35401"], ["Near SLC45A2", "rs4049255"],
+            ["OCA2", "rs11852452"], ["OCA2", "rs1800407"], ["OCA2", "rs2703960"],
+            ["OCA2", "rs2871772"], ["OCA2", "rs3930739"], ["OCA2", "rs4778138"],
+            ["OCA2", "rs4778199"], ["OCA2", "rs7178315"], ["OCA2", "rs8034072"],
+            ["OCA2", "rs977588"], ["OCA2", "rs977589"], ["OCA2", "rs7495174"],
+            ["SLC24A4", "rs12896399"], ["SLC24A4", "rs2402130"], ["SLC24A4", "rs4900109"],
+            ["SLC24A4", "rs4904847"], ["SLC24A4", "rs4904868"], ["SLC24A4", "rs8006358"],
+            ["SLC24A5", "rs1426654"], ["SLC45A2", "rs16891982"], ["SLC45A2", "rs28117"],
+            ["SLC45A2", "rs28777"], ["TPCN2", "rs35264875"], ["TYR", "rs10741305"],
+            ["TYR", "rs10765198"], ["TYR", "rs1126809"], ["TYR", "rs1393350"],
+            ["TYRP1", "rs1408794"], ["TYRP1", "rs1408799"], ["TYRP1", "rs16929340"],
+            ["TYRP1", "rs683"], ["PRDM16", "rs2493272"], ["PRDM16", "rs2493292"],
+            ["PRDM16", "rs868688"], ["PAX3", "rs1438607"], ["PAX3", "rs7559271"],
+            ["OSR1", "rs825537"], ["OSR1", "rs6707044"], ["OSR1", "rs851352"],
+            ["OSR1", "rs851320"], ["OSR1", "rs1100942"], ["EDAR", "rs3827760"],
+            ["CACNA2D3", "rs510605"], ["CACNA2D3", "rs515920"], ["CACNA2D3", "rs10510771"],
+            ["SCHIP1", "rs10513546"], ["SCHIP1", "rs33051"], ["LOC101927947", "rs9790702"],
+            ["DCHS2", "rs4696584"], ["DCHS2", "rs11099953"], ["DCHS2", "rs11721758"],
+            ["COL23A1", "rs625820"], ["GLI3", "rs17640804"], ["LINC02003", "rs4793422"],
+            ["CHST8", "rs285696"], ["BMP2", "rs3920540"], ["Unknown", "rs7483"],
+            ["Unknown", "rs756134"], ["Unknown", "rs2024612"], ["Unknown", "rs677874"],
+            ["Unknown", "rs664776"], ["Unknown", "rs224597"], ["Unknown", "rs224644"],
+            ["Unknown", "rs948413"], ["Unknown", "rs948414"], ["Unknown", "rs1884777"],
+            ["Unknown", "rs2999559"], ["Unknown", "rs3749096"], ["Unknown", "rs751135"],
+            ["Unknown", "rs12053317"], ["Unknown", "rs6723140"], ["Unknown", "rs4752566"],
+            ["Unknown", "rs2981432"], ["Unknown", "rs3750817"], ["Unknown", "rs2981578"],
+            ["Unknown", "rs1791633"], ["Unknown", "rs44637"], ["Unknown", "rs597340"],
+            ["Unknown", "rs4766640"], ["Unknown", "rs6542787"], ["Unknown", "rs892540"],
+            ["Unknown", "rs4648379"], ["Unknown", "rs938036"], ["Unknown", "rs7702108"],
+            ["Unknown", "rs446212"], ["Unknown", "rs9346612"], ["Unknown", "rs662702"],
+            ["Unknown", "rs745443"], ["Unknown", "rs260690"], ["Unknown", "rs2072590"]
+        ];
+        // Create a map for fast lookup
+        const snpMap = {};
+        snpList.forEach(([gene, snp]) => { snpMap[snp.toLowerCase()] = gene; });
+
+        document.getElementById('geneticFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const lines = evt.target.result.split(/\r?\n/);
+                const matches = [];
+                lines.forEach(line => {
+                    if (line.startsWith('#') || !line.trim()) return;
+                    const parts = line.trim().split(/\s+/);
+                    if (parts.length >= 4) {
+                        let rsid = parts[0].toLowerCase();
+                        if (!rsid.startsWith('rs')) rsid = 'rs' + rsid.replace(/^rs/i, '');
+                        if (snpMap[rsid]) {
+                            const chromosome = parts[1];
+                            const position = parts[2];
+                            const genotype = parts[3] + (parts[4] ? parts[4] : '');
+                            matches.push({
+                                rsid, chromosome, position, genotype, gene: snpMap[rsid]
+                            });
+                        }
+                    }
+                });
+                // Show SNP count
+                document.getElementById('snpCount').textContent = `Found ${matches.length} matching SNP${matches.length === 1 ? '' : 's'}`;
+                // Show only raw format
+                let raw = '# rsid\tchromosome\tposition\tgenotype\n';
+                matches.forEach(row => {
+                    raw += `${row.rsid}\t${row.chromosome}\t${row.position}\t${row.genotype}\n`;
+                });
+                document.getElementById('rawData').value = raw;
+            };
+            reader.readAsText(file);
+        });
+        function copyRawData() {
+            const ta = document.getElementById('rawData');
+            ta.select();
+            ta.setSelectionRange(0, 99999); // For mobile
+            document.execCommand('copy');
+            // Show notification
+            const notice = document.getElementById('copyNotice');
+            notice.style.display = 'inline';
+            setTimeout(() => { notice.style.display = 'none'; }, 1500);
+        }
+    </script>
+</body>
+
+</html>
